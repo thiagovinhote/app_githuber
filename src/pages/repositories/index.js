@@ -3,13 +3,15 @@ import {
   View,
   ActivityIndicator,
   AsyncStorage,
+  FlatList,
+  RefreshControl,
   Text,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import api from 'services/api';
 import styles from './styles';
 import Repository from './components/repository';
-import api from '../../services/api'
 
 class Respositories extends Component {
   static navigationOptions = {
@@ -21,20 +23,39 @@ class Respositories extends Component {
   state = {
     repositories: [],
     loading: false,
+    refreshing: false,
   };
 
   componentWillMount() {
-    this.loadRepositories();
+    this.setState({ loading: true });
+    this.loadRepositories()
+      .then(() => {
+        this.setState({ loading: false });
+      });
   }
 
   loadRepositories = async () => {
-    this.setState({ loading: true });
+    this.setState({ refreshing: true });
 
     const username = await AsyncStorage.getItem('@Githuber:username');
     const response = await api.get(`/users/${username}/repos`);
 
-    this.setState({ repositories: response, loading: false });
+    this.setState({ repositories: response.data, refreshing: false });
   };
+
+  renderRepositories = () => (
+    <FlatList
+      refreshControl={
+        <RefreshControl
+          refreshing={this.state.refreshing}
+          onRefresh={this.loadRepositories}
+        />
+      }
+      data={this.state.repositories}
+      keyExtractor={repository => repository.id}
+      renderItem={({ item }) => <Repository repository={item} />}
+    />
+  );
 
   renderList = () => (
     this.state.repositories.length
@@ -46,7 +67,7 @@ class Respositories extends Component {
     return (
       <View style={styles.container}>
         { this.state.loading
-          ? <ActivityIndicator size="small" color="#FFF" />
+          ? <ActivityIndicator style={styles.loading} size="small" color="#999" />
           : this.renderList()
         }
       </View>

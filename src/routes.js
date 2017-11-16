@@ -18,6 +18,8 @@ const createRootNavigator = (userExists = false) =>
         Organizations: { screen: Organizations },
       }, {
         tabBarPosition: 'bottom',
+        swipeEnabled: true,
+        animationEnabled: true,
         tabBarOptions: {
           showLabel: false,
           activeTintColor: colors.white,

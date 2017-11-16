@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { colors, fonts } from '../../../../styles';
+import { colors, fonts } from 'styles';
 
 const styles = StyleSheet.create({
   container: {
@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
     shadowColor: colors.inactive,
     shadowOpacity: 0.3,
     shadowRadius: 8,
-    marginBottom: 20,
+    marginTop: 20,
+    marginHorizontal: 20,
   },
 
   title: {
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
   },
 
   infoIcon: {
-    color: colors.dark
+    color: colors.dark,
   },
 
   infoText: {
